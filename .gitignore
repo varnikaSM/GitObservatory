@@ -4,7 +4,8 @@ __pycache__/
 *.pyo
 *.pyd
 *.log
-
+*.html
+*.dbc
 # Virtual Environment
 venv/
 .env
@@ -21,6 +22,7 @@ databricks.yml
 
 # Local configs
 config.py
+
 
 # OS
 .DS_Store
