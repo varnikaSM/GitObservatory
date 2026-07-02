@@ -32,7 +32,7 @@ st.divider()
 # Repository Input Section
 # ============================================================
 
-st.markdown("## 📂 Repository Selection")
+st.markdown("## Repository Selection")
 col1, col2 = st.columns(2)
 with col1:
     st.markdown("### Repository 1")
@@ -48,9 +48,10 @@ st.divider()
 # Analysis Window
 # ============================================================
 
-st.markdown("## 📅 Analysis Window")
+st.markdown("## Analysis Window")
 
 analysis_options = {
+    "Last 15 days":"15d",
     "Last 1 Month": "1m",
     "Last 2 Months": "2m",
     "Last Quarter (3 Months)": "3m",
@@ -58,7 +59,7 @@ analysis_options = {
     "Last 1 Year": "1y",
     "Last 2 Years": "2y"
 }
-selected_analysis = st.radio("📅 Analysis Window",options=list(analysis_options.keys()),horizontal=True,index=4)
+selected_analysis = st.radio("Analysis Window",options=list(analysis_options.keys()),horizontal=True,index=4)
 analysis_window = analysis_options[selected_analysis]
 st.divider()
 
@@ -95,15 +96,17 @@ if compare:
         completed = wait_for_completion(run_id)
         progress.progress(85)
         if completed:
-            status.info("📊 Loading analytics...")
+            status.info("Loading analytics")
             df = get_repository_comparison()
             progress.progress(100)
-            status.success("✅ Repository comparison completed successfully!")
+            st.write(df)
+            st.write(f"Rows returned: {len(df)}")
+            status.success("Repository comparison completed successfully!")
             render_dashboard(df)
 
         else:
             progress.empty()
-            status.error("❌ Pipeline execution failed.")
+            status.error("Pipeline execution failed.")
 
 st.divider()
 

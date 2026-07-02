@@ -1,3 +1,5 @@
+
+#---------------    
 import streamlit as st
 from utils.charts import (
     health_chart,
@@ -208,17 +210,30 @@ def render_dashboard(df):
 # INSIGHTS
 # =====================================================
 
-
-    st.subheader("Repository Insights")
-
     for insight in generate_insights(df):
 
-        with st.container(border=True):
+        st.markdown(
+            f"""
+            <div class="insight-card">
 
-            st.markdown(f"### {insight['title']}")
-            st.write(insight["message"])
+                <div class="insight-title">
 
-        st.divider()
+                    {insight['title']}
+
+                </div>
+
+                <div class="insight-body">
+
+                    {insight['message']}
+
+                </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    st.divider()
 # =====================================================
 # RAW DATA
 # =====================================================
