@@ -25,22 +25,11 @@ def trigger_pipeline(repo1, repo2, analysis_window):
     run_id
     """
 
-    payload = {
-        "job_id": int(JOB_ID),
-        "job_parameters": {
-            "repo_urls": f"{repo1},{repo2}",
-            "analysis_window": analysis_window
-        }
-    }
+    payload = {"job_id": int(JOB_ID),
+        "job_parameters": {"repo_urls": f"{repo1},{repo2}","analysis_window": analysis_window}}
 
-    response = requests.post(
-        f"{HOST}/api/2.1/jobs/run-now",
-        headers=HEADERS,
-        json=payload
-    )
-
+    response = requests.post(f"{HOST}/api/2.1/jobs/run-now",headers=HEADERS,json=payload)
     response.raise_for_status()
-
     return response.json()["run_id"]
 
 
@@ -49,21 +38,12 @@ def get_run_status(run_id):
     Returns the lifecycle state and result state.
     """
 
-    response = requests.get(
-        f"{HOST}/api/2.1/jobs/runs/get",
-        headers=HEADERS,
-        params={"run_id": run_id}
-    )
-
+    response = requests.get(f"{HOST}/api/2.1/jobs/runs/get",headers=HEADERS,params={"run_id": run_id})
     response.raise_for_status()
-
     data = response.json()
-
     state = data["state"]
-
     lifecycle = state.get("life_cycle_state")
     result = state.get("result_state")
-
     return lifecycle, result
 
 
@@ -73,15 +53,11 @@ def wait_for_completion(run_id, poll_interval=10):
     """
 
     while True:
-
         lifecycle, result = get_run_status(run_id)
-
         if lifecycle == "TERMINATED":
-
             return result == "SUCCESS"
 
         if lifecycle in ["INTERNAL_ERROR", "SKIPPED"]:
-
             return False
 
         time.sleep(poll_interval)
