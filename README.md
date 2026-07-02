@@ -218,6 +218,8 @@ streamlit run app.py
 
 ---
 
+## Screenshots of the portal
+
 ## Future Enhancements
 
 - AI-powered repository health explanations
