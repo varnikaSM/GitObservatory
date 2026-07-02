@@ -9,20 +9,203 @@ The project automatically ingests GitHub repository metadata, pull requests, iss
 The platform enables users to compare open-source repositories based on engineering health, development activity, workflow reliability, and community engagement.
 
 ---
+---
 
-# Technology Stack
+## Repository Health Score
 
-- Azure Databricks
-- Delta Lake
-- PySpark
-- Spark SQL
-- GitHub REST API
-- Azure Databricks Workflows
-- Unity Catalog
-- Streamlit
-- Plotly
-- Python
+GitObservatory computes a **Repository Health Score (0–100)** using multiple engineering and community metrics.
 
+The score incorporates:
+
+- Community popularity
+  - Stars
+  - Forks
+
+- Development activity
+  - Active contributors
+  - Pull Requests
+  - Merge activity
+
+- Repository maintenance
+  - Issue management
+  - Issue closure rate
+
+- CI/CD reliability
+  - GitHub Actions workflow success
+
+The Health Score is translated into:
+
+| Health Score | Grade | Status |
+|--------------|-------|------------------|
+| 90–100 | A+ | Excellent |
+| 80–89 | A | Very Healthy |
+| 70–79 | B | Healthy |
+| 60–69 | C | Moderate |
+| <60 | D | Needs Improvement |
+
+---
+
+# Architecture
+
+```
+GitHub REST API
+        │
+        ▼
+Azure Databricks Workflow
+        │
+        ▼
+Bronze Layer
+Raw GitHub Data
+        │
+        ▼
+Silver Layer
+Cleaned & Standardized Data
+        │
+        ▼
+Gold Layer
+Repository Analytics
+        │
+        ▼
+SQL Warehouse
+        │
+        ▼
+Streamlit Dashboard
+```
+
+---
+
+## Medallion Architecture
+
+### Bronze Layer
+
+Raw ingestion from GitHub REST APIs.
+
+Includes:
+
+- Repository Metadata
+- Pull Requests
+- Issues
+- Contributors
+- Pull Request Reviews
+- GitHub Actions Workflow Runs
+
+---
+
+### Silver Layer
+
+Data cleansing and standardization.
+
+Examples:
+
+- Timestamp conversion
+- Duplicate removal
+- Repository enrichment
+- Merge duration calculation
+- Issue resolution calculation
+- Review classification
+
+---
+
+### Gold Layer
+
+Business-ready analytics.
+
+Examples:
+
+- Repository Health Score
+- Merge Rate
+- Issue Closure Rate
+- Contributor Metrics
+- Workflow Success Rate
+- Repository Recommendation
+
+---
+
+## Dashboard
+
+The Streamlit dashboard provides:
+
+- Repository Overview
+- Repository Health
+- Pull Request Analytics
+- Issue Analytics
+- Contributor Analytics
+- Workflow Analytics
+- Radar Chart Comparison
+- Repository Insights
+- Detailed Repository Comparison
+
+---
+
+## Technology Stack
+
+| Layer | Technology |
+|--------|------------|
+| Programming Language | Python |
+| Data Engineering | Azure Databricks |
+| Storage | Delta Lake |
+| Processing | Apache Spark |
+| API | GitHub REST API |
+| Dashboard | Streamlit |
+| Visualization | Plotly |
+| Version Control | Git & GitHub |
+
+---
+
+## Repository Structure
+
+```
+GitObservatory/
+
+├── app.py
+├── assets/
+├── dashboard/
+├── utils/
+├── databricks/
+│   ├── notebooks/
+│   ├── workflow/
+│   └── dbc/
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## Running the Project
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/<username>/GitObservatory.git
+```
+
+### 2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure environment variables
+
+Create a `.env` file containing:
+
+```
+DATABRICKS_HOST=<your-host>
+
+DATABRICKS_TOKEN=<your-token>
+
+SQL_WAREHOUSE_ID=<warehouse-id>
+
+JOB_ID=<workflow-job-id>
+```
+
+### 4. Start Streamlit
+
+```bash
+streamlit run app.py
+```
+
+---
 ---
 
 # Repository Selection
@@ -107,32 +290,6 @@ Examples include:
 <img src="ui7.png" width="900">
 
 ---
-
-# Medallion Architecture
-
-The project follows the Medallion Architecture implemented in Azure Databricks.
-
-```
-GitHub REST API
-        │
-        ▼
-Bronze Layer
-Raw GitHub API ingestion
-        │
-        ▼
-Silver Layer
-Data cleansing & transformation
-        │
-        ▼
-Gold Layer
-Engineering KPIs & Repository Scores
-        │
-        ▼
-Streamlit Dashboard
-```
-
----
-
 # Azure Databricks Workflow
 
 The complete ETL process is orchestrated using Azure Databricks Workflows.
